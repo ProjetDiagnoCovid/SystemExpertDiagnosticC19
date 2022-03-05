@@ -1,0 +1,246 @@
+package com.sample.rules
+import ma.fstm.ilisi2.ExpertSysCovid19.model.bo.*;
+import java.util.ArrayList;
+
+rule "rule1"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes ,degreCont_C19>=0.0 , degreCont_C19<0.6)
+	$s1 : Symptome(description == "fievre" , mesure.getValeur()>=38) from $symptomes
+	$s2 : Symptome(description == "toux sèche") from $symptomes
+	$s3 : Symptome(description == "fatigue") from $symptomes
+	then
+		$d.setDegreCont_C19(0.6);
+		update($d);
+		System.out.println("regle 1 satisfaite !");
+end
+
+rule "rule2"
+	when 
+		$d : Diagnostic($client : client , $symptomes : symptomes,degreCont_C19==0.6)
+    	$s : Symptome( description=="congestion nasal") from $symptomes
+	then
+		$d.setDegreCont_C19(0.7);
+		update($d);
+		System.out.println("regle 2 satisfaite !");
+end
+
+rule "rule3"
+	when 
+		$d : Diagnostic($client : client , degreCont_C19 >= 0.7 , degreCont_C19 < 0.8)
+    	$Etat : Etatpandemie(etat == "haut") from $client.getVille().getRegion().getEtat_pandemie()
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 3 satisfaite !");
+end
+rule "rule4"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.7 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "écoulement nasal") from $symptomes
+	$s2 : Symptome(description == "maux de gorge") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 4 satisfaite !");
+end
+
+rule "rule5"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.8 , degreCont_C19 < 0.9)
+	$s1 : Symptome(description == "diarrhé") from $symptomes
+	then
+		$d.setDegreCont_C19(0.9);
+		update($d);
+		System.out.println("regle 5 satisfaite !");
+end
+
+rule "rule6"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.95)
+	$s1 : Symptome(description == "dyspnée") from $symptomes
+	then
+		$d.setDegreCont_C19(0.95);
+		update($d);
+		System.out.println("regle 6 satisfaite !");
+end
+
+rule "rule7"
+	when 
+	$d : Diagnostic( degreCont_C19 >= 0.8)
+	then
+		$d.envoyerInfo();
+		System.out.println("regle 7 satisfaite !");
+end
+
+rule "rule8"
+	when 
+    	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6)
+    	$cl : Client(age > 70) from $client
+	then
+		$d.envoyerInfo();
+		System.out.println("regle 8 satisfaite !");
+end
+
+rule "rule 9_1"
+	when 
+	$d : Diagnostic($md:maladieDiag,$ms:maladiesSympt ,degreCont_C19 >= 0.6)
+	$hyperTemsion:HyperTension() from $ms
+	then
+	$d.envoyerInfo();
+	System.out.println("regle 9-1 satisfaite !");
+end
+
+rule "rule 9_2"
+	when $d : Diagnostic($md:maladieDiag,$ms:maladiesSympt ,degreCont_C19 >= 0.6)
+	$diabete:Diabete() from $ms
+	then
+	$d.envoyerInfo();
+	System.out.println("regle 9-2 satisfaite !");
+end
+
+rule "rule 9_3"
+	when $d : Diagnostic($md:maladieDiag,$ms:maladiesSympt ,degreCont_C19 >= 0.6)
+	$cardiaque:Cardiaque() from $ms
+	then
+	$d.envoyerInfo();
+	System.out.println("regle 9-3 satisfaite !");
+end
+
+rule "rule10"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "frissons") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 10 satisfaite !");
+end
+rule "rule11"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "douleurs musculaires") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 11 satisfaite !");
+end
+
+rule "rule12"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "maux de tete") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 12 satisfaite !");
+end
+
+rule "rule13"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "gorge sèche") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 13 satisfaite !");
+end
+
+rule "rule14"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.80)
+	$s1 : Symptome(description == "perte de goût" || description == "perte de l'odorat") from $symptomes
+	then
+		$d.setDegreCont_C19(0.80);
+		update($d);
+		System.out.println("regle 14 satisfaite !");
+end
+
+rule "rule15"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.85)
+	$s1 : Symptome(description == "essouflement") from $symptomes
+	then
+		$d.setDegreCont_C19(0.85);
+		update($d);
+		System.out.println("regle 15 satisfaite !");
+end
+
+rule "rule16"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes)
+	$cl : Client(age > 70) from $client
+	$s1 : Symptome(description == "confusion" || description == "chute") from $symptomes
+	then
+		$d.setDegreCont_C19(0.6);
+		update($d);
+		System.out.println("regle 16 satisfaite !");
+end
+
+rule "rule17"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes)
+	$cl : Client(age > 70) from $client
+	$s1 : Symptome(description == "diarrhé") from $symptomes
+	then
+		$d.setDegreCont_C19(0.6);
+		update($d);
+		System.out.println("regle 17 satisfaite !");
+end
+
+rule "rule18"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "nausée" || description == "vomissement") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 18 satisfaite !");
+end
+
+rule "rule19"
+	when 
+	$d : Diagnostic(degreCont_C19 >= 0.6 , degreCont_C19 < 0.9 , contact_Covid19==true)
+	then
+		$d.setDegreCont_C19(0.9);
+		update($d);
+		System.out.println("regle 19 satisfaite !");
+end
+
+rule "rule20"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "conjonctivite") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 20 satisfaite !");
+end
+
+rule "rule21"
+	when 
+	$d : Diagnostic($client : client , $symptomes : symptomes , degreCont_C19 >= 0.6 , degreCont_C19 < 0.8)
+	$s1 : Symptome(description == "tremblement répété") from $symptomes
+	then
+		$d.setDegreCont_C19(0.8);
+		update($d);
+		System.out.println("regle 21 satisfaite !");
+end
+
+rule "rule22"
+	when 
+	$d : Diagnostic($client : client , degreCont_C19 >= 0.7)
+	$cl : Client(age > 70) from $client
+	then
+		$d.envoyerInfo();
+		System.out.println("regle 23 satisfaite !");
+end
+
+/*
+rule "rule22"
+	when 
+	$d : Diagnostic(degreCont_C19 >= 0.8)
+	then
+		$d.envoyerInfo();
+		System.out.println("regle 22 satisfaite !");
+end
+*/
